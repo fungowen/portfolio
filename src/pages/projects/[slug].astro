@@ -1,0 +1,150 @@
+---
+import Base from '../../layouts/Base.astro';
+import { projects } from '../../data/projects.js';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<Base title={project.title} description={project.blurb}>
+  <article class="page">
+    <p class="back"><a href="/#work">Back to all work</a></p>
+
+    <header class="head">
+      <p class="meta">{project.kind}, {project.year}</p>
+      <h1>{project.title}</h1>
+      <p class="summary">{project.summary}</p>
+      <ul class="tools">
+        {project.tools.map((t) => <li>{t}</li>)}
+      </ul>
+      {
+        project.links && project.links.length > 0 && (
+          <ul class="linkrow">
+            {project.links.map((link) => (
+              <li>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    {
+      project.embed && project.embed.url && (
+        <figure class="embed">
+          <iframe
+            src={project.embed.url}
+            title={`${project.title}, interactive version`}
+            loading="lazy"
+          />
+          {project.embed.caption && (
+            <figcaption class="meta">{project.embed.caption}</figcaption>
+          )}
+        </figure>
+      )
+    }
+
+    {
+      project.images && project.images.length > 0 && (
+        <div class="shots">
+          {project.images.map((image) => (
+            <figure>
+              <img src={image.src} alt={image.alt} />
+              {image.caption && <figcaption class="meta">{image.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="prose body">
+      {
+        project.sections.map((section) => (
+          <section>
+            <h2>{section.heading}</h2>
+            <p>{section.body}</p>
+          </section>
+        ))
+      }
+    </div>
+  </article>
+</Base>
+
+<style>
+  .page {
+    padding-bottom: 3rem;
+  }
+
+  .back {
+    font-size: var(--step--1);
+    margin: 0.5rem 0 2.5rem;
+  }
+
+  .head {
+    max-width: var(--measure);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    margin: 0.4rem 0 1rem;
+  }
+
+  .summary {
+    color: var(--ink-soft);
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+
+  .head .tools {
+    margin-top: 1.2rem;
+  }
+
+  .embed {
+    margin: 3rem 0 0;
+  }
+
+  .embed iframe {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--rule);
+    background: var(--paper-raised);
+  }
+
+  .shots {
+    margin-top: 3rem;
+    display: grid;
+    gap: 2rem;
+  }
+
+  .shots figure {
+    margin: 0;
+  }
+
+  .shots img {
+    border: 1px solid var(--rule);
+  }
+
+  figcaption {
+    margin-top: 0.6rem;
+  }
+
+  .body {
+    margin-top: 3rem;
+  }
+
+  .body section + section {
+    margin-top: 2.2rem;
+  }
+
+  .body h2 {
+    font-size: var(--step-1);
+    margin-bottom: 0.5rem;
+  }
+</style>

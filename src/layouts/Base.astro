@@ -1,0 +1,92 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site.js';
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} — ${site.name}` : `${site.name}, ${site.role}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description ?? site.tagline} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;500&display=swap"
+    />
+  </head>
+  <body>
+    <header class="page site-head">
+      <a href="/" class="site-name">{site.name}</a>
+      <nav aria-label="Main">
+        <a href="/#projects">Projects</a>
+        <a href="/#about">About</a>
+        <a href={`mailto:${site.email}`}>Email</a>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <div class="axis" role="presentation"></div>
+    <footer class="page site-foot">
+      <p class="meta">
+        Built with Astro. Source on
+        <a href={site.github}>GitHub</a>.
+      </p>
+      <p class="meta">Last updated {site.updated}</p>
+    </footer>
+
+    <style>
+      .site-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.6rem 0;
+        flex-wrap: wrap;
+      }
+
+      .site-name {
+        font-family: var(--font-display);
+        font-size: var(--step-1);
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      nav {
+        display: flex;
+        gap: 1.4rem;
+        font-size: var(--step--1);
+      }
+
+      nav a {
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+
+      nav a:hover {
+        color: var(--accent);
+      }
+
+      .site-foot {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 1.5rem 0 3rem;
+      }
+
+      .site-foot p {
+        margin: 0;
+      }
+    </style>
+  </body>
+</html>

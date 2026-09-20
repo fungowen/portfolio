@@ -1,0 +1,205 @@
+/* ---- tokens ----------------------------------------------------------
+   "Spotlight" theme.
+   Drawn from three reference images: a near-black court with one
+   saturated figure, a navy jersey against a desaturated crowd, and a
+   deep indigo sky resolving into a hot sunset. The shared idea is a
+   dark field with a single bright thing in it, so the palette is
+   almost entirely muted and one warm accent carries everything.
+
+   Dark only, deliberately. See the note in the README.
+--------------------------------------------------------------------- */
+
+:root {
+  --paper: #0b0e14;
+  --paper-raised: #141a24;
+  --ink: #edf1f7;
+  --ink-soft: #7c8798;
+  --rule: #212938;
+
+  /* Sits between a Bulls red and a sunset coral. Warm enough to read as
+     heat rather than as an error message. */
+  --accent: #ff5c42;
+  --accent-lift: #ff7d67;
+
+  /* Two pools of light on the page background. The cool one sits high
+     and faint; the warm one gathers at the bottom, so scrolling to the
+     end of the page arrives somewhere lighter than it started. */
+  --glow-cool: #161d2e;
+  --glow-warm: #2a1b1c;
+
+  --measure: 66ch;
+  --page: 74rem;
+  --gap: 1.5rem;
+
+  --step--1: 0.86rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.32rem;
+  --step-2: 1.72rem;
+  --step-3: 2.3rem;
+  --step-4: clamp(2.6rem, 1.6rem + 3.4vw, 4.1rem);
+
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'IBM Plex Serif', Georgia, serif;
+
+  color-scheme: dark;
+}
+
+/* ---- base ------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-feature-settings: 'ss02';
+
+  /* The page is darkest in the middle and opens up at the end. Both
+     pools are deliberately faint: you should feel the shift rather than
+     notice a gradient. */
+  background-image:
+    radial-gradient(90ch 45ch at 15% 0%, var(--glow-cool) 0%, transparent 65%),
+    radial-gradient(130ch 55ch at 60% 100%, var(--glow-warm) 0%, transparent 70%);
+  background-repeat: no-repeat, no-repeat;
+  background-size: 100% 100%, 100% 100%;
+  background-position: top center, bottom center;
+  background-attachment: scroll;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0 0 1em;
+  max-width: var(--measure);
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--accent-lift);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ---- layout ---------------------------------------------------------- */
+
+.page {
+  width: min(100% - 2.5rem, var(--page));
+  margin-inline: auto;
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+/* A ruled axis, borrowed from a chart baseline. */
+.axis {
+  height: 9px;
+  border-top: 1px solid var(--rule);
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--rule) 0 1px,
+    transparent 1px 3.5rem
+  );
+  background-size: auto 9px;
+  background-repeat: repeat-x;
+  margin: 0;
+}
+
+/* ---- small pieces ---------------------------------------------------- */
+
+.meta {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.tools {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.tools li + li {
+  position: relative;
+}
+
+.tools li + li::before {
+  content: '';
+  position: absolute;
+  left: -0.5rem;
+  top: 0.55em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--rule);
+}
+
+.linkrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  list-style: none;
+}
+
+.linkrow a {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--rule);
+  background: var(--paper-raised);
+  text-decoration: none;
+  font-size: var(--step--1);
+}
+
+.linkrow a:hover {
+  border-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

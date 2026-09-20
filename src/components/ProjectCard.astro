@@ -1,0 +1,58 @@
+---
+const { project } = Astro.props;
+---
+
+<a class="card" href={`/projects/${project.slug}/`} data-kind={project.kind}>
+  <span class="topline">
+    <span class="kind">{project.kind}</span>
+    <span class="year">{project.year}</span>
+  </span>
+  <h3>{project.title}</h3>
+  <p class="blurb">{project.blurb}</p>
+  <ul class="tools">
+    {project.tools.map((t) => <li>{t}</li>)}
+  </ul>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.1rem 0 1.6rem;
+    border-top: 1px solid var(--rule);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .card:hover {
+    border-top-color: var(--accent);
+  }
+
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+
+  h3 {
+    font-size: var(--step-2);
+    max-width: 22ch;
+  }
+
+  .card:hover h3 {
+    color: var(--accent);
+  }
+
+  .blurb {
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: 44ch;
+  }
+
+  .tools {
+    margin-top: auto;
+    padding-top: 0.4rem;
+  }
+</style>

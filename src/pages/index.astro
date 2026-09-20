@@ -1,0 +1,174 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/projects.js';
+import { site } from '../data/site.js';
+
+const ordered = [...projects].sort((a, b) => Number(b.featured) - Number(a.featured));
+
+// The filter buttons come from whatever categories are actually in use,
+// not a fixed list. Add a project with a new `kind` and its button appears
+// on its own — nothing here needs editing.
+const kinds = [...new Set(projects.map((p) => p.kind))].sort();
+---
+
+<Base>
+  <section class="page hero">
+    <h1>{site.name}</h1>
+    <p class="role">{site.tagline}</p>
+    <div class="prose intro">
+      {site.intro.map((para) => <p>{para}</p>)}
+    </div>
+  </section>
+
+  <div class="axis" role="presentation"></div>
+
+  <section class="page work" id="projects">
+    <h2>Projects</h2>
+
+    {
+      kinds.length > 1 && (
+        <div class="filters" role="group" aria-label="Filter projects by category">
+          <button type="button" class="filter active" data-filter="all">
+            All
+          </button>
+          {kinds.map((kind) => (
+            <button type="button" class="filter" data-filter={kind}>
+              {kind}s
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="grid">
+      {ordered.map((project) => <ProjectCard project={project} />)}
+    </div>
+    <p class="empty" hidden>No projects in this category yet.</p>
+  </section>
+
+  <div class="axis" role="presentation"></div>
+
+  <section class="page about" id="about">
+    <h2>About</h2>
+    <div class="prose">
+      {site.about.map((para) => <p>{para}</p>)}
+      <ul class="linkrow">
+        <li><a href={`mailto:${site.email}`}>Email me</a></li>
+        <li><a href={site.linkedin}>LinkedIn</a></li>
+        <li><a href={site.github}>GitHub</a></li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding: 3.5rem 0 3rem;
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    margin-bottom: 0.6rem;
+  }
+
+  .role {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 40ch;
+    margin-bottom: 2rem;
+  }
+
+  .intro p:last-child {
+    margin-bottom: 0;
+  }
+
+  .work,
+  .about {
+    padding: 2.5rem 0 3rem;
+  }
+
+  h2 {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.6rem;
+    margin: -0.6rem 0 1.8rem;
+  }
+
+  .filter {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 0 0 0.3rem;
+    font: inherit;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+
+  .filter:hover {
+    color: var(--ink);
+  }
+
+  .filter.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+
+  .empty {
+    color: var(--ink-soft);
+    font-size: var(--step--1);
+  }
+
+  .grid {
+    display: grid;
+    gap: 0 3rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 46rem) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+<script>
+  // Reads each card's data-kind attribute (set in ProjectCard.astro) and
+  // shows or hides cards to match whichever filter button was clicked.
+  // No build step involved — this runs in the visitor's browser.
+  const buttons = document.querySelectorAll('.filter');
+  const cards = document.querySelectorAll('.card');
+  const emptyMessage = document.querySelector('.empty');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+
+      buttons.forEach((b) => b.classList.toggle('active', b === button));
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const isMatch = filter === 'all' || card.dataset.kind === filter;
+        card.style.display = isMatch ? '' : 'none';
+        if (isMatch) visibleCount += 1;
+      });
+
+      if (emptyMessage) emptyMessage.hidden = visibleCount > 0;
+    });
+  });
+</script>
